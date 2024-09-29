@@ -53,7 +53,7 @@ userSchema.pre("save", async function (next) {
   // if there is no any password change/modification then its move to next() with bcrypt.hash the password
   if (!this.isModified("password")) return next();
   //   if the password is change/modified then its move to next() with bcrypt.hash
-  this.password = bcrypt.hash(this.password);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
@@ -65,7 +65,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 // now this method return boolean value true of false
 
 userSchema.methods.generateAccessToken = function () {
-  jwt.sign(
+ return jwt.sign(
     {
       _id: this._id,
       username: this.username,
@@ -80,7 +80,7 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 userSchema.methods.generateRefreshToken = function () {
-  jwt.sign(
+ return jwt.sign(
     {
       _id: this._id,
     },
